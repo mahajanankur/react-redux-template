@@ -4,18 +4,19 @@ import { Link } from 'react-router-dom';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import DateTime from 'react-datetime';
 
-import { createCampiagn, getCampiagnById } from "../../actions/events";
+import { createCampiagn, getCampiagnById } from "../../../actions/events";
 
-import Header from "../../components/Header/Header";
+import Header from "../../../components/Header/Header";
 // import s from './Dashboard.scss';
-import './Dashboard.scss';
+import './Details.scss';
 
-class Dashboard extends React.Component {
+class Details extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
+      campaignId: this.props.location.state && this.props.location.state.campaignId ? this.props.location.state.campaignId : null,
       assets: [{ url: '' }],
       inclusions: [{ include: '' }],
       instuctions: [{ instuction: '' }],
@@ -46,65 +47,50 @@ class Dashboard extends React.Component {
   }
 
   componentWillMount() {
-    // this.props.dispatch(getCampiagnById(1)).then(() => {
-    //   this.setState({
-    //     campaign: this.props.campaign,
-    //     heading: this.props.campaign.heading,
-    //     body: this.props.campaign.body,
-    //     price: this.props.campaign.price,
-    //     startTime: this.props.campaign.startTime,
-    //     endTime: this.props.campaign.endTime,
-    //     footer: this.props.campaign.footer,
+    const campaignId = this.state.campaignId;
+    if (campaignId) {
+      this.props.dispatch(getCampiagnById(campaignId)).then(() => {
+        this.setState({
+          campaign: this.props.campaign,
+          heading: this.props.campaign.heading,
+          body: this.props.campaign.body,
+          price: this.props.campaign.price,
+          startTime: this.props.campaign.startTime,
+          endTime: this.props.campaign.endTime,
+          footer: this.props.campaign.footer,
 
-    //     altitude: this.props.campaign.fact.altitude,
-    //     baseCamp: this.props.campaign.fact.baseCamp,
-    //     trekType: this.props.campaign.fact.trekType,
-    //     roadHead: this.props.campaign.fact.roadHead,
-    //     railHead: this.props.campaign.fact.railHead,
+          factId: this.props.campaign.fact.id,
+          altitude: this.props.campaign.fact.altitude,
+          baseCamp: this.props.campaign.fact.baseCamp,
+          trekType: this.props.campaign.fact.trekType,
+          roadHead: this.props.campaign.fact.roadHead,
+          railHead: this.props.campaign.fact.railHead,
 
-    //     assets: this.props.campaign.assets,
-    //     inclusions: this.props.campaign.inclusions,
-    //     instuctions: this.props.campaign.instuctions,
-    //     thingsToCarry: this.props.campaign.thingsToCarry,
-    //     itineraries: this.props.campaign.itineraries,
-        
-    //     email: this.props.campaign.contact.email,
-    //     mobile: this.props.campaign.contact.mobile,
-    //     landline: this.props.campaign.contact.landline,
-    //     alternate: this.props.campaign.contact.alternate,
+          assets: this.props.campaign.assets,
+          inclusions: this.props.campaign.inclusions,
+          instuctions: this.props.campaign.instuctions,
+          thingsToCarry: this.props.campaign.thingsToCarry,
+          itineraries: this.props.campaign.itineraries,
 
-    //     pincode: this.props.campaign.location.pincode,
-    //     address: this.props.campaign.location.address
-    //   });
-    // });
+          contactId: this.props.campaign.contact.id,
+          email: this.props.campaign.contact.email,
+          mobile: this.props.campaign.contact.mobile,
+          landline: this.props.campaign.contact.landline,
+          alternate: this.props.campaign.contact.alternate,
+
+          locationId: this.props.campaign.location.id,
+          pincode: this.props.campaign.location.pincode,
+          address: this.props.campaign.location.address
+        });
+      });
+    }
   }
-
-  // addAssets = () => {
-  //   this.setState({ assets: this.state.assets.concat([{ url: '' }]) });
-  // }
-
-  // removeAsset = (index) => () => {
-  //   this.setState({ assets: this.state.assets.filter((asset, idx) => index !== idx) });
-  // }
-
-  // assetChange = (index) => (event) => {
-  //   // <Form.Control type="text" placeholder={"Asset" + i} onChange={this.assetChange(i)} />
-  //   const recent = this.state.assets.map((asset, idx) => {
-  //     if (index !== idx) return asset;
-  //     return { ...asset, url: event.target.value };
-  //   });
-  //   console.log("New Assets state: ", recent);
-  //   this.setState({ assets: recent });
-  // }
 
   addGenericDynamicField = (stateKey, base) => {
     this.setState({ [stateKey]: this.state[stateKey].concat([base]) });
   }
 
   removeGenericDynamicField = (index, stateKey) => {
-    // console.log("Index: ", index);
-    // console.log("stateKey: ", stateKey);
-    // console.log("Old state: ", this.state[stateKey]);
     this.setState({ [stateKey]: this.state[stateKey].filter((element, idx) => index !== idx) });
   }
 
@@ -137,9 +123,10 @@ class Dashboard extends React.Component {
     this.setState({ [stateKey]: moment.toDate() });
   }
 
-  submitCampaignForm = (event) => {
+  submitUpdateCampaignForm = (event) => {
     // let body = createCampaignBody();
     let body = {
+      id: this.prop.fact.id,
       heading: this.state.heading,
       body: this.state.body,
       price: this.state.price,
@@ -147,10 +134,11 @@ class Dashboard extends React.Component {
       endTime: this.state.endTime,
       footer: this.state.footer,
       fact: {
+        id: this.prop.fact.id,
         altitude: this.state.altitude,
         baseCamp: this.state.baseCamp,
         trekType: this.state.trekType,
-        roadHead: this.state.roadHead,
+        busHead: this.state.busHead,
         railHead: this.state.railHead
       },
       contact: {
@@ -170,7 +158,7 @@ class Dashboard extends React.Component {
       thingsToCarry: this.state.thingsToCarry,
       itineraries: this.state.itineraries
     };
-    console.log("Create Campaign Body: ", JSON.stringify(body));
+    console.log("Update Campaign Body: ", JSON.stringify(body));
     this.props.dispatch(createCampiagn(body));
     event.preventDefault();
   }
@@ -188,10 +176,15 @@ class Dashboard extends React.Component {
           {this.props.message &&
             <p align='center' style={{ color: 'red' }}>{this.props.message}</p>
           }
-          <Form onSubmit={this.submitCampaignForm.bind(this)}>
-            <h5 align='left' style={{ color: 'black' }}>Create Campaign</h5>
+          <Form onSubmit={this.submitUpdateCampaignForm.bind(this)}>
+            <h5 align='left' style={{ color: 'black' }}>Update Campaign</h5>
             <Row>
               <Col sm={6} md={6}>
+                <Form.Group controlId="campaignId">
+                  <Col sm={10}>
+                    <Form.Control type="text" placeholder="campaignId" name="campaignId" required value={this.state.campaignId} disabled />
+                  </Col>
+                </Form.Group>
                 <Form.Group controlId="heading">
                   <Col sm={10}>
                     <Form.Control type="text" placeholder="Heading" name="heading" required onChange={this.handleGenericOnChange} value={this.state.heading} />
@@ -242,10 +235,13 @@ class Dashboard extends React.Component {
                 <Form.Group controlId="factSecond">
                   <Col sm={10}>
                     <Row>
-                      <Col sm={6}>
+                      <Col sm={4}>
+                        <Form.Control type="text" placeholder="factId" name="factId" required value={this.state.factId} disabled />
+                      </Col>
+                      <Col sm={4}>
                         <Form.Control type="text" placeholder="Road head" name="roadHead" onChange={this.handleGenericOnChange} value={this.state.roadHead} />
                       </Col>
-                      <Col sm={6}>
+                      <Col sm={4}>
                         <Form.Control type="text" placeholder="Rail head" name="railHead" onChange={this.handleGenericOnChange} value={this.state.railHead} />
                       </Col>
                     </Row>
@@ -267,10 +263,13 @@ class Dashboard extends React.Component {
                 <Form.Group controlId="contactSecond">
                   <Col sm={10}>
                     <Row>
-                      <Col sm={6}>
+                      <Col sm={4}>
+                        <Form.Control type="text" placeholder="contactId" name="contactId" required value={this.state.contactId} disabled />
+                      </Col>
+                      <Col sm={4}>
                         <Form.Control type="text" placeholder="Landline" name="landline" onChange={this.handleGenericOnChange} value={this.state.landline} />
                       </Col>
-                      <Col sm={6}>
+                      <Col sm={4}>
                         <Form.Control type="text" placeholder="Alternate" name="alternate" onChange={this.handleGenericOnChange} value={this.state.alternate} />
                       </Col>
                     </Row>
@@ -280,10 +279,13 @@ class Dashboard extends React.Component {
                 <Form.Group controlId="location">
                   <Col sm={10}>
                     <Row>
-                      <Col sm={6}>
+                      <Col sm={4}>
+                        <Form.Control type="text" placeholder="locationId" name="locationId" required value={this.state.locationId} disabled />
+                      </Col>
+                      <Col sm={4}>
                         <Form.Control type="text" placeholder="Pincode" required name="pincode" onChange={this.handleGenericOnChange} value={this.state.pincode} />
                       </Col>
-                      <Col sm={6}>
+                      <Col sm={4}>
                         <Form.Control type="text" placeholder="Address" required name="address" onChange={this.handleGenericOnChange} value={this.state.address} />
                       </Col>
                     </Row>
@@ -416,7 +418,7 @@ class Dashboard extends React.Component {
 
                 <Form.Group>
                   <Col sm={8}>
-                    <Button type="submit">Send</Button>
+                    <Button type="submit">Update</Button>
                   </Col>
                 </Form.Group>
               </Col>
@@ -437,39 +439,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Dashboard);
-
- // createCampaignBody() {
-  //   let body = {
-  //     heading: this.state.heading,
-  //     body: this.state.body,
-  //     price: this.state.price,
-  //     startTime: this.state.startTime,
-  //     endTime: this.state.endTime,
-  //     footer: this.state.footer,
-  //     fact: {
-  //       altitude: this.state.altitude,
-  //       baseCamp: this.state.baseCamp,
-  //       trekType: this.state.trekType,
-  //       busHead: this.state.busHead,
-  //       railHead: this.state.railHead
-  //     },
-  //     contact: {
-  //       email: this.state.email,
-  //       mobile: this.state.mobile,
-  //       landline: this.state.landline,
-  //       alternate: this.state.alternate,
-  //       address: this.state.address
-  //     },
-  //     location: {
-  //       pincode: this.state.pincode,
-  //       address: this.state.address
-  //     },
-  //     assets: this.state.assets,
-  //     inclusions: this.state.inclusions,
-  //     instuctions: this.state.instuctions,
-  //     thingsToCarry: this.state.thingsToCarry,
-  //     itineraries: this.state.itineraries
-  //   };
-  //   return body;
-  // }
+export default connect(mapStateToProps)(Details);

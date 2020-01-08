@@ -1,0 +1,43 @@
+/**
+ * React Starter Kit (https://www.reactstarterkit.com/)
+ *
+ * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
+
+@import '../../styles/app';
+
+.navbarImage {
+    width: 150px;
+    padding: 15px;
+    height: 75px;
+    margin-left: -96px !important;
+
+}
+
+.navDropdownStyle {
+    //color: black;
+    font-weight: bold;
+    //background-color: white;
+}
+
+.customButton {
+  color: #fff;
+  background-color: #1081F6;
+  border-color: #1081F6;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  //text-transform: uppercase;
+  font-weight: normal;
+  vertical-align: middle;
+  &:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+}
+
+.navbarStyle {
+  box-shadow: 0px 3px 3px rgba(0,0,0,0.3); 
+}
