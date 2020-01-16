@@ -19,11 +19,18 @@ class Header extends React.Component {
               <Navbar.Toggle aria-controls="responsive-navbar-nav" />
               <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">
-                  <Nav.Link href="/">Create</Nav.Link>
-                  <Nav.Link href="/list">List</Nav.Link>
-                  <NavDropdown title="Campaign" id="collasible-nav-dropdown">
+                  {/* <Nav.Link href="/">Create</Nav.Link>
+                  <Nav.Link href="/campaign/list">Campaign</Nav.Link>
+                  <Nav.Link href="/donation/list">Donation</Nav.Link> */}
+                  <NavDropdown title="Campaigns" id="collasible-nav-dropdown">
                     <NavDropdown.Item href="/">Create</NavDropdown.Item>
-                    <NavDropdown.Item href="/list">List</NavDropdown.Item>
+                    <NavDropdown.Item href="/campaign/list">List</NavDropdown.Item>
+                    <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+                  </NavDropdown>
+                  <NavDropdown title="Donations" id="collasible-nav-dropdown">
+                    <NavDropdown.Item href="/donation/list">List</NavDropdown.Item>
                     <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>

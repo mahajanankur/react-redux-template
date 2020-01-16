@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Row, Col, Table } from 'react-bootstrap';
 import moment from 'moment';
+import { Delete, AddCircle, Visibility } from '@material-ui/icons';
 
 import Header from "../../../components/Header/Header";
 
@@ -74,12 +75,14 @@ class CampaignList extends React.Component {
                                             <td>
                                                 <Link to={
                                                     {
-                                                        pathname: "/details",
+                                                        pathname: "/campaign/details",
                                                         // hash: "#the-hash",
                                                         state: { campaignId: cam.id }
-
                                                     }
-                                                } className="btn btn-sm btn-success">Check</Link></td>
+                                                }>
+                                                    <Visibility />
+                                                </Link>
+                                            </td>
                                         </tr>
                                     ))}
                                     {this.state.campaigns && !this.state.campaigns.length &&
@@ -105,8 +108,8 @@ class CampaignList extends React.Component {
 function mapStateToProps(state) {
     // console.log("states : ", state);
     return {
-        campaigns: state.events.campaigns,
-        isFetching: state.events.isCreating
+        campaigns: state.events.getAllCampaignsResponse,
+        isFetching: state.events.isFetching
     };
 }
 

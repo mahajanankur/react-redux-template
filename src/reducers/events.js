@@ -2,7 +2,8 @@ import {
     CREATE_CAMPAIGN_INITIAL, CREATE_CAMPAIGN_REQUEST, CREATE_CAMPAIGN_SUCCESS,
     CREATE_CAMPAIGN_FAILURE, FETCH_CAMPAIGN_REQUEST, FETCH_CAMPAIGN_SUCCESS,
     FETCH_CAMPAIGN_FAILURE, FETCH_ALL_CAMPAIGN_REQUEST, FETCH_ALL_CAMPAIGN_SUCCESS,
-    FETCH_ALL_CAMPAIGN_FAILURE
+    FETCH_ALL_CAMPAIGN_FAILURE, UPDATE_CAMPAIGN_INITIAL, UPDATE_CAMPAIGN_REQUEST,
+    UPDATE_CAMPAIGN_SUCCESS, UPDATE_CAMPAIGN_FAILURE
 } from '../actions/events';
 
 export default function events(state = {
@@ -16,18 +17,18 @@ export default function events(state = {
         case CREATE_CAMPAIGN_REQUEST:
             return Object.assign({}, state, {
                 isCreating: true,
-                campaign: action.campaign
+                createCampaignBody: action.createCampaignBody
             });
         case CREATE_CAMPAIGN_SUCCESS:
             return Object.assign({}, state, {
                 isCreating: false,
                 message: 'Campaign created successfully.',
-                campaign: action.campaign
+                createCampaignResponse: action.createCampaignResponse
             });
         case CREATE_CAMPAIGN_FAILURE:
             return Object.assign({}, state, {
                 isCreating: false,
-                message: action.message,
+                message: action.createCampaignMessage,
             });
         case FETCH_CAMPAIGN_REQUEST:
             return Object.assign({}, state, {
@@ -36,26 +37,46 @@ export default function events(state = {
         case FETCH_CAMPAIGN_SUCCESS:
             return Object.assign({}, state, {
                 isFetching: false,
-                campaign: action.campaign
+                getCampaignResponse: action.getCampaignResponse
             });
         case FETCH_CAMPAIGN_FAILURE:
             return Object.assign({}, state, {
                 isFetching: false,
-                message: action.message,
+                message: action.getCampaignMessage,
             });
-            case FETCH_ALL_CAMPAIGN_REQUEST:
+        case FETCH_ALL_CAMPAIGN_REQUEST:
             return Object.assign({}, state, {
                 isFetching: true
             });
         case FETCH_ALL_CAMPAIGN_SUCCESS:
             return Object.assign({}, state, {
                 isFetching: false,
-                campaigns: action.campaigns
+                getAllCampaignsResponse: action.getAllCampaignsResponse
             });
         case FETCH_ALL_CAMPAIGN_FAILURE:
             return Object.assign({}, state, {
                 isFetching: false,
-                message: action.message,
+                message: action.getAllCampaignsMessage,
+            });
+        case UPDATE_CAMPAIGN_INITIAL:
+            return Object.assign({}, state, {
+                isUpdating: false
+            });
+        case UPDATE_CAMPAIGN_REQUEST:
+            return Object.assign({}, state, {
+                isUpdating: true,
+                updateCampaignBody: action.updateCampaignBody
+            });
+        case UPDATE_CAMPAIGN_SUCCESS:
+            return Object.assign({}, state, {
+                isUpdating: false,
+                message: 'Campaign updated successfully.',
+                updateCampaignResponse: action.updateCampaignResponse
+            });
+        case UPDATE_CAMPAIGN_FAILURE:
+            return Object.assign({}, state, {
+                isUpdating: false,
+                message: action.updateCampaignMessage,
             });
         default:
             return state;

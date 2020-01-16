@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import DateTime from 'react-datetime';
+import { Delete, AddCircle } from '@material-ui/icons';
 
-import { createCampiagn, getCampiagnById } from "../../../actions/events";
+import { updateCampiagn, getCampiagnById } from "../../../actions/events";
 
 import Header from "../../../components/Header/Header";
 // import s from './Dashboard.scss';
@@ -16,7 +17,7 @@ class Details extends React.Component {
     super(props);
 
     this.state = {
-      campaignId: this.props.location.state && this.props.location.state.campaignId ? this.props.location.state.campaignId : null,
+      campaignId: this.props.location.state && this.props.location.state.campaignId ? this.props.location.state.campaignId : "",
       assets: [{ url: '' }],
       inclusions: [{ include: '' }],
       instuctions: [{ instuction: '' }],
@@ -31,16 +32,16 @@ class Details extends React.Component {
       altitude: 1600,
       baseCamp: '',
       trekType: 'Easy',
-      roadHead: null,
-      railHead: null,
+      roadHead: '',
+      railHead: '',
       email: '',
       mobile: '',
-      landline: null,
-      alternate: null,
+      landline: '',
+      alternate: '',
       pincode: 174031,
       address: '',
       // isCreating: this.props.isCreating,
-      // campaign: this.props.campaign
+      campaign: this.props.campaign
     };
     // this.headingChange = this.headingChange.bind(this);
     // this.addGenericDynamicField = this.addGenericDynamicField.bind(this);
@@ -88,17 +89,30 @@ class Details extends React.Component {
 
   addGenericDynamicField = (stateKey, base) => {
     this.setState({ [stateKey]: this.state[stateKey].concat([base]) });
+    // console.log(`New ${stateKey} state: `, recent);
   }
 
   removeGenericDynamicField = (index, stateKey) => {
-    this.setState({ [stateKey]: this.state[stateKey].filter((element, idx) => index !== idx) });
+    let data = this.state[stateKey][index];
+    //Change deleted and active flag if the entries are 
+    if (data.id) {
+      const recent = this.state[stateKey].map((element, idx) => {
+        // console.log(`Supplied index ${index} iteration ${idx} and element ${JSON.stringify(element)}`);
+        return (index === idx) ? { ...element, deleted: true, active: false, campaignId: null } : element;
+      });
+      console.log(`New ${stateKey} state: `, recent);
+      this.setState({ [stateKey]: recent });
+    } else {
+      this.setState({ [stateKey]: this.state[stateKey].filter((element, idx) => index !== idx) });
+    }
+
   }
 
   changeGenericDynamicFields = (index, stateKey, name) => (event) => {
     const recent = this.state[stateKey].map((element, idx) => {
       return (index !== idx) ? element : { ...element, [name]: event.target.value };
     });
-    // console.log(`New ${stateKey} state: `, recent);
+    console.log(`New ${stateKey} state: `, recent);
     this.setState({ [stateKey]: recent });
   }
 
@@ -125,8 +139,10 @@ class Details extends React.Component {
 
   submitUpdateCampaignForm = (event) => {
     // let body = createCampaignBody();
+    // debugger;
+    // console.log("Update Campaign Form", JSON.stringify(event));
     let body = {
-      id: this.prop.fact.id,
+      id: this.state.campaign.id,
       heading: this.state.heading,
       body: this.state.body,
       price: this.state.price,
@@ -134,7 +150,7 @@ class Details extends React.Component {
       endTime: this.state.endTime,
       footer: this.state.footer,
       fact: {
-        id: this.prop.fact.id,
+        id: this.state.factId,
         altitude: this.state.altitude,
         baseCamp: this.state.baseCamp,
         trekType: this.state.trekType,
@@ -142,6 +158,7 @@ class Details extends React.Component {
         railHead: this.state.railHead
       },
       contact: {
+        id: this.state.contactId,
         email: this.state.email,
         mobile: this.state.mobile,
         landline: this.state.landline,
@@ -149,6 +166,7 @@ class Details extends React.Component {
         address: this.state.address
       },
       location: {
+        id: this.state.locationId,
         postalCode: this.state.pincode,
         address: this.state.address
       },
@@ -159,7 +177,7 @@ class Details extends React.Component {
       itineraries: this.state.itineraries
     };
     console.log("Update Campaign Body: ", JSON.stringify(body));
-    this.props.dispatch(createCampiagn(body));
+    this.props.dispatch(updateCampiagn(body));
     event.preventDefault();
   }
 
@@ -299,19 +317,24 @@ class Details extends React.Component {
                     {
                       this.state.assets.map((element, i) => {
                         return (
-                          <Row key={i}>
-                            <Col sm={10} >
-                              <Form.Control type="text" placeholder={"Asset" + i} onChange={this.changeGenericDynamicFields(i, "assets", "url")} value={element['url']} />
-                            </Col>
-                            <Col sm={2}>
-                              <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "assets")} >Remove</Button>
-                            </Col>
-                          </Row>
+                          <div key={i}>
+                            <Row>
+                              <Col sm={10} >
+                                <Form.Control type="text" placeholder={"Asset" + i} onChange={this.changeGenericDynamicFields(i, "assets", "url")} value={element['url']} />
+                              </Col>
+                              <Col sm={1} >
+                                <Form.Check type="checkbox" checked={element['deleted']} disabled />
+                              </Col>
+                              <Col sm={1}>
+                                <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "assets")} ><Delete /></Button>
+                              </Col>
+                            </Row>
+                          </div>
                         );
                       })
                     }
                     <div className="text-right">
-                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("assets", assetsBase)}>Add</Button>
+                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("assets", assetsBase)}><AddCircle /></Button>
                     </div>
                   </Col>
                 </Form.Group>
@@ -325,15 +348,18 @@ class Details extends React.Component {
                             <Col sm={10} >
                               <Form.Control type="text" placeholder={"Inclusions" + i} onChange={this.changeGenericDynamicFields(i, "inclusions", "include")} value={element['include']} />
                             </Col>
-                            <Col sm={2}>
-                              <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "inclusions")} >Remove</Button>
+                            <Col sm={1} >
+                                <Form.Check type="checkbox" checked={element['deleted']} disabled />
+                              </Col>
+                            <Col sm={1}>
+                              <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "inclusions")} ><Delete /></Button>
                             </Col>
                           </Row>
                         );
                       })
                     }
                     <div className="text-right">
-                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("inclusions", inclusionBase)}>Add</Button>
+                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("inclusions", inclusionBase)}><AddCircle /></Button>
                     </div>
                   </Col>
                 </Form.Group>
@@ -347,15 +373,18 @@ class Details extends React.Component {
                             <Col sm={10} >
                               <Form.Control type="text" placeholder={"instuctions" + i} onChange={this.changeGenericDynamicFields(i, "instuctions", "instuction")} value={element['instuction']} />
                             </Col>
-                            <Col sm={2}>
-                              <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "instuctions")} >Remove</Button>
+                            <Col sm={1} >
+                                <Form.Check type="checkbox" checked={element['deleted']} disabled />
+                              </Col>
+                            <Col sm={1}>
+                              <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "instuctions")} ><Delete /></Button>
                             </Col>
                           </Row>
                         );
                       })
                     }
                     <div className="text-right">
-                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("instuctions", instuctionBase)}>Add</Button>
+                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("instuctions", instuctionBase)}><AddCircle /></Button>
                     </div>
                   </Col>
                 </Form.Group>
@@ -369,15 +398,18 @@ class Details extends React.Component {
                             <Col sm={10} >
                               <Form.Control type="text" placeholder={"thingsToCarry" + i} onChange={this.changeGenericDynamicFields(i, "thingsToCarry", "thing")} value={element['thing']} />
                             </Col>
-                            <Col sm={2}>
-                              <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "thingsToCarry")} >Remove</Button>
+                            <Col sm={1} >
+                                <Form.Check type="checkbox" checked={element['deleted']} disabled />
+                              </Col>
+                            <Col sm={1}>
+                              <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "thingsToCarry")} ><Delete /></Button>
                             </Col>
                           </Row>
                         );
                       })
                     }
                     <div className="text-right">
-                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("thingsToCarry", thingsToCarryBase)}>Add</Button>
+                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("thingsToCarry", thingsToCarryBase)}><AddCircle /></Button>
                     </div>
                   </Col>
                 </Form.Group>
@@ -392,7 +424,7 @@ class Details extends React.Component {
                               <Col sm={6} >
                                 <DateTime dateFormat="DD/MM/YYYY" inputProps={{ placeholder: 'Time' + i }} onChange={this.changeDate(i, "itineraries", "date")} value={element['date']} />
                               </Col>
-                              <Col sm={6} >
+                              <Col sm={4} >
                                 <Form.Control type="text" placeholder={"Heading" + i} onChange={this.changeGenericDynamicFields(i, "itineraries", "heading")} value={element['heading']} />
                               </Col>
                             </Row>
@@ -401,8 +433,11 @@ class Details extends React.Component {
                               <Col sm={10} >
                                 <Form.Control type="text" placeholder={"Body" + i} onChange={this.changeGenericDynamicFields(i, "itineraries", "body")} value={element['body']} />
                               </Col>
-                              <Col sm={2}>
-                                <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "itineraries")} >Remove</Button>
+                              <Col sm={1} >
+                                <Form.Check type="checkbox" checked={element['deleted']} disabled />
+                              </Col>
+                              <Col sm={1}>
+                                <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "itineraries")} ><Delete /></Button>
                               </Col>
                             </Row>
 
@@ -411,7 +446,7 @@ class Details extends React.Component {
                       })
                     }
                     <div className="text-right">
-                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("itineraries", itineraryBase)}>Add</Button>
+                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("itineraries", itineraryBase)}><AddCircle /></Button>
                     </div>
                   </Col>
                 </Form.Group>
@@ -433,9 +468,8 @@ class Details extends React.Component {
 function mapStateToProps(state) {
   // console.log("states : ", state);
   return {
-    campaign: state.events.campaign,
-    message: state.events.message,
-    isCreating: state.events.isCreating
+    campaign: state.events.getCampaignResponse,
+    message: state.events.message
   };
 }
 

@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Row, Col, Form, Button } from 'react-bootstrap';
-import { Delete, AddCircle, Visibility } from '@material-ui/icons';
 import DateTime from 'react-datetime';
 
 import { createCampiagn, getCampiagnById } from "../../actions/events";
@@ -37,7 +36,7 @@ class Dashboard extends React.Component {
       mobile: '',
       landline: null,
       alternate: null,
-      pincode: '',
+      pincode: 174031,
       address: '',
       // isCreating: this.props.isCreating,
       // campaign: this.props.campaign
@@ -68,7 +67,7 @@ class Dashboard extends React.Component {
     //     instuctions: this.props.campaign.instuctions,
     //     thingsToCarry: this.props.campaign.thingsToCarry,
     //     itineraries: this.props.campaign.itineraries,
-
+        
     //     email: this.props.campaign.contact.email,
     //     mobile: this.props.campaign.contact.mobile,
     //     landline: this.props.campaign.contact.landline,
@@ -298,21 +297,19 @@ class Dashboard extends React.Component {
                     {
                       this.state.assets.map((element, i) => {
                         return (
-                          <div key={i}>
-                            <Row>
-                              <Col sm={10} >
-                                <Form.Control type="text" placeholder={"Asset" + i} onChange={this.changeGenericDynamicFields(i, "assets", "url")} value={element['url']} />
-                              </Col>
-                              <Col sm={2}>
-                                <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "assets")} ><Delete /></Button>
-                              </Col>
-                            </Row>
-                          </div>
+                          <Row key={i}>
+                            <Col sm={10} >
+                              <Form.Control type="text" placeholder={"Asset" + i} onChange={this.changeGenericDynamicFields(i, "assets", "url")} value={element['url']} />
+                            </Col>
+                            <Col sm={2}>
+                              <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "assets")} >Remove</Button>
+                            </Col>
+                          </Row>
                         );
                       })
                     }
                     <div className="text-right">
-                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("assets", assetsBase)}><AddCircle /></Button>
+                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("assets", assetsBase)}>Add</Button>
                     </div>
                   </Col>
                 </Form.Group>
@@ -327,14 +324,14 @@ class Dashboard extends React.Component {
                               <Form.Control type="text" placeholder={"Inclusions" + i} onChange={this.changeGenericDynamicFields(i, "inclusions", "include")} value={element['include']} />
                             </Col>
                             <Col sm={2}>
-                              <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "inclusions")} ><Delete /></Button>
+                              <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "inclusions")} >Remove</Button>
                             </Col>
                           </Row>
                         );
                       })
                     }
                     <div className="text-right">
-                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("inclusions", inclusionBase)}><AddCircle /></Button>
+                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("inclusions", inclusionBase)}>Add</Button>
                     </div>
                   </Col>
                 </Form.Group>
@@ -349,14 +346,14 @@ class Dashboard extends React.Component {
                               <Form.Control type="text" placeholder={"instuctions" + i} onChange={this.changeGenericDynamicFields(i, "instuctions", "instuction")} value={element['instuction']} />
                             </Col>
                             <Col sm={2}>
-                              <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "instuctions")} ><Delete /></Button>
+                              <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "instuctions")} >Remove</Button>
                             </Col>
                           </Row>
                         );
                       })
                     }
                     <div className="text-right">
-                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("instuctions", instuctionBase)}><AddCircle /></Button>
+                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("instuctions", instuctionBase)}>Add</Button>
                     </div>
                   </Col>
                 </Form.Group>
@@ -371,14 +368,14 @@ class Dashboard extends React.Component {
                               <Form.Control type="text" placeholder={"thingsToCarry" + i} onChange={this.changeGenericDynamicFields(i, "thingsToCarry", "thing")} value={element['thing']} />
                             </Col>
                             <Col sm={2}>
-                              <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "thingsToCarry")} ><Delete /></Button>
+                              <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "thingsToCarry")} >Remove</Button>
                             </Col>
                           </Row>
                         );
                       })
                     }
                     <div className="text-right">
-                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("thingsToCarry", thingsToCarryBase)}><AddCircle /></Button>
+                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("thingsToCarry", thingsToCarryBase)}>Add</Button>
                     </div>
                   </Col>
                 </Form.Group>
@@ -393,7 +390,7 @@ class Dashboard extends React.Component {
                               <Col sm={6} >
                                 <DateTime dateFormat="DD/MM/YYYY" inputProps={{ placeholder: 'Time' + i }} onChange={this.changeDate(i, "itineraries", "date")} value={element['date']} />
                               </Col>
-                              <Col sm={4} >
+                              <Col sm={6} >
                                 <Form.Control type="text" placeholder={"Heading" + i} onChange={this.changeGenericDynamicFields(i, "itineraries", "heading")} value={element['heading']} />
                               </Col>
                             </Row>
@@ -403,22 +400,23 @@ class Dashboard extends React.Component {
                                 <Form.Control type="text" placeholder={"Body" + i} onChange={this.changeGenericDynamicFields(i, "itineraries", "body")} value={element['body']} />
                               </Col>
                               <Col sm={2}>
-                                <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "itineraries")} ><Delete /></Button>
+                                <Button size="sm" variant="secondary" onClick={() => this.removeGenericDynamicField(i, "itineraries")} >Remove</Button>
                               </Col>
                             </Row>
+
                           </div>
                         );
                       })
                     }
                     <div className="text-right">
-                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("itineraries", itineraryBase)}><AddCircle /></Button>
+                      <Button size="sm" variant="secondary" onClick={() => this.addGenericDynamicField("itineraries", itineraryBase)}>Add</Button>
                     </div>
                   </Col>
                 </Form.Group>
 
                 <Form.Group>
                   <Col sm={8}>
-                    <Button type="submit">Create</Button>
+                    <Button type="submit">Send</Button>
                   </Col>
                 </Form.Group>
               </Col>
@@ -433,6 +431,7 @@ class Dashboard extends React.Component {
 function mapStateToProps(state) {
   // console.log("states : ", state);
   return {
+    campaign: state.events.campaign,
     message: state.events.message,
     isCreating: state.events.isCreating
   };
