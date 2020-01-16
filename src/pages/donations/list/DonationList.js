@@ -5,7 +5,7 @@ import { Row, Col, Table } from 'react-bootstrap';
 import moment from 'moment';
 import { Delete, AddCircle, Visibility } from '@material-ui/icons';
 
-import Header from "../../../components/Header/Header";
+import Header from "../../../components/header/Header";
 
 import { getAllDonations } from "../../../actions/donations";
 // import s from './Dashboard.scss';

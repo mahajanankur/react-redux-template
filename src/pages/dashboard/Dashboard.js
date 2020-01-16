@@ -7,7 +7,7 @@ import DateTime from 'react-datetime';
 
 import { createCampiagn, getCampiagnById } from "../../actions/events";
 
-import Header from "../../components/Header/Header";
+import Header from "../../components/header/Header";
 // import s from './Dashboard.scss';
 import './Dashboard.scss';
 
