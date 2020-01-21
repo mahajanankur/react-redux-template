@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import DateTime from 'react-datetime';
+import moment from 'moment';
 import { Delete, AddCircle } from '@material-ui/icons';
 
 import { updateCampiagn, getCampiagnById } from "../../../actions/events";
@@ -38,7 +39,7 @@ class Details extends React.Component {
       mobile: '',
       landline: '',
       alternate: '',
-      pincode: 174031,
+      postalCode: 174031,
       address: '',
       // isCreating: this.props.isCreating,
       campaign: this.props.campaign
@@ -80,7 +81,7 @@ class Details extends React.Component {
           alternate: this.props.campaign.contact.alternate,
 
           locationId: this.props.campaign.location.id,
-          pincode: this.props.campaign.location.pincode,
+          postalCode: this.props.campaign.location.postalCode,
           address: this.props.campaign.location.address
         });
       });
@@ -167,7 +168,7 @@ class Details extends React.Component {
       },
       location: {
         id: this.state.locationId,
-        postalCode: this.state.pincode,
+        postalCode: this.state.postalCode,
         address: this.state.address
       },
       assets: this.state.assets,
@@ -222,10 +223,10 @@ class Details extends React.Component {
                   <Col sm={10}>
                     <Row>
                       <Col sm={6}>
-                        <DateTime dateFormat="DD/MM/YYYY" inputProps={{ placeholder: 'Start Time', required: true }} onChange={this.handleGenericDateOnChange("startTime")} value={this.state.startTime} />
+                        <DateTime dateFormat="DD/MM/YYYY" inputProps={{ placeholder: 'Start Time', required: true }} onChange={this.handleGenericDateOnChange("startTime")} value={moment(this.state.startTime).format("DD/MM/YYYY hh:mm A")} />
                       </Col>
                       <Col sm={6}>
-                        <DateTime dateFormat="DD/MM/YYYY" inputProps={{ placeholder: 'End Time', required: true }} onChange={this.handleGenericDateOnChange("endTime")} value={this.state.endTime} />
+                        <DateTime dateFormat="DD/MM/YYYY" inputProps={{ placeholder: 'End Time', required: true }} onChange={this.handleGenericDateOnChange("endTime")} value={moment(this.state.endTime).format("DD/MM/YYYY hh:mm A")} />
                       </Col>
                     </Row>
                   </Col>
@@ -301,7 +302,7 @@ class Details extends React.Component {
                         <Form.Control type="text" placeholder="locationId" name="locationId" required value={this.state.locationId} disabled />
                       </Col>
                       <Col sm={4}>
-                        <Form.Control type="text" placeholder="Pincode" required name="pincode" onChange={this.handleGenericOnChange} value={this.state.pincode} />
+                        <Form.Control type="text" placeholder="PostalCode" required name="postalCode" onChange={this.handleGenericOnChange} value={this.state.postalCode} />
                       </Col>
                       <Col sm={4}>
                         <Form.Control type="text" placeholder="Address" required name="address" onChange={this.handleGenericOnChange} value={this.state.address} />
@@ -422,7 +423,7 @@ class Details extends React.Component {
                           <div key={i}>
                             <Row>
                               <Col sm={6} >
-                                <DateTime dateFormat="DD/MM/YYYY" inputProps={{ placeholder: 'Time' + i }} onChange={this.changeDate(i, "itineraries", "date")} value={element['date']} />
+                                <DateTime dateFormat="DD/MM/YYYY" inputProps={{ placeholder: 'Time' + i }} onChange={this.changeDate(i, "itineraries", "date")} value={moment(element['date']).format("DD/MM/YYYY hh:mm A")} />
                               </Col>
                               <Col sm={4} >
                                 <Form.Control type="text" placeholder={"Heading" + i} onChange={this.changeGenericDynamicFields(i, "itineraries", "heading")} value={element['heading']} />

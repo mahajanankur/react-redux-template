@@ -3,7 +3,8 @@ import {
     CREATE_CAMPAIGN_FAILURE, FETCH_CAMPAIGN_REQUEST, FETCH_CAMPAIGN_SUCCESS,
     FETCH_CAMPAIGN_FAILURE, FETCH_ALL_CAMPAIGN_REQUEST, FETCH_ALL_CAMPAIGN_SUCCESS,
     FETCH_ALL_CAMPAIGN_FAILURE, UPDATE_CAMPAIGN_INITIAL, UPDATE_CAMPAIGN_REQUEST,
-    UPDATE_CAMPAIGN_SUCCESS, UPDATE_CAMPAIGN_FAILURE
+    UPDATE_CAMPAIGN_SUCCESS, UPDATE_CAMPAIGN_FAILURE, FETCH_ALL_ENROLLMENTS_REQUEST,
+    FETCH_ALL_ENROLLMENTS_SUCCESS, FETCH_ALL_ENROLLMENTS_FAILURE
 } from '../actions/events';
 
 export default function events(state = {
@@ -77,6 +78,20 @@ export default function events(state = {
             return Object.assign({}, state, {
                 isUpdating: false,
                 message: action.updateCampaignMessage,
+            });
+        case FETCH_ALL_ENROLLMENTS_REQUEST:
+            return Object.assign({}, state, {
+                isFetching: true
+            });
+        case FETCH_ALL_ENROLLMENTS_SUCCESS:
+            return Object.assign({}, state, {
+                isFetching: false,
+                getEnrollmentsResponse: action.getEnrollmentsResponse
+            });
+        case FETCH_ALL_ENROLLMENTS_FAILURE:
+            return Object.assign({}, state, {
+                isFetching: false,
+                message: action.getEnrollmentsMessage,
             });
         default:
             return state;

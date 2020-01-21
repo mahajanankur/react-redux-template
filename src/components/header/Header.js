@@ -15,7 +15,7 @@ class Header extends React.Component {
         <Row>
           <Col sm={12} xs={12} md={12}>
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-              <Navbar.Brand href="/">HH</Navbar.Brand>
+              <Navbar.Brand href="/campaign/list">HH</Navbar.Brand>
               <Navbar.Toggle aria-controls="responsive-navbar-nav" />
               <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">
@@ -23,7 +23,7 @@ class Header extends React.Component {
                   <Nav.Link href="/campaign/list">Campaign</Nav.Link>
                   <Nav.Link href="/donation/list">Donation</Nav.Link> */}
                   <NavDropdown title="Campaigns" id="collasible-nav-dropdown">
-                    <NavDropdown.Item href="/">Create</NavDropdown.Item>
+                    <NavDropdown.Item href="/campaign/create">Create</NavDropdown.Item>
                     <NavDropdown.Item href="/campaign/list">List</NavDropdown.Item>
                     <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
                     <NavDropdown.Divider />
@@ -40,7 +40,7 @@ class Header extends React.Component {
                   <Nav.Link href="#deets">More deets</Nav.Link>
                   <Nav.Link eventKey={2} href="#memes">
                     Dank memes
-      </Nav.Link>
+                  </Nav.Link>
                 </Nav>
               </Navbar.Collapse>
             </Navbar>

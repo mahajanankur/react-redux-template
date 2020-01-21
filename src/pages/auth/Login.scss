@@ -1,0 +1,18 @@
+@import '../../styles/app';
+
+.widget {
+  max-width: 360px;
+  margin: 0 auto;
+  padding: 30px !important;
+
+  :global .form-control {
+    font-size: 14px;
+  }
+}
+
+.center {
+  margin: auto;
+  width: 70%;
+  border: 1px solid green;
+  padding: 10px;
+}

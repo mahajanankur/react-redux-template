@@ -3,23 +3,23 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Row, Col, Table, Pagination } from 'react-bootstrap';
 import moment from 'moment';
-import { DeleteForever, AddCircle, Visibility, EventAvailable } from '@material-ui/icons';
+import { Delete, AddCircle, Visibility, EventAvailable } from '@material-ui/icons';
 
-import Header from "../../../components/header/Header";
+import Header from "../../../../components/header/Header";
 
-import { getAllCampiagnsPaginated } from "../../../actions/events";
+import { getEnrollmentsOfCampiagn } from "../../../../actions/events";
 // import s from './Dashboard.scss';
-import './CampaignList.scss';
-import { PAGINATION_SIZE } from '../../../constants/application';
+import './EnrollmentList.scss';
+import { PAGINATION_SIZE } from '../../../../constants/application';
 
-
-class CampaignList extends React.Component {
+class EnrollmentList extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            campaigns: [],
+            campaignId: (this.props.location.state && this.props.location.state.campaignId) ? this.props.location.state.campaignId : "",
+            enrollments: [],
             page: 0,
             size: PAGINATION_SIZE,
             items: []
@@ -27,18 +27,19 @@ class CampaignList extends React.Component {
     }
 
     componentWillMount() {
-        this.getCampaignList(this.state.page, this.state.size);
+        console.log(`Campaign id supplied in link is ${this.state.campaignId}`);
+        this.getEnrollmentList(this.state.campaignId, this.state.page, this.state.size);
     }
 
-    getCampaignList(page, size) {
-        this.props.dispatch(getAllCampiagnsPaginated(page, size)).then(() => {
+    getEnrollmentList(campaignId, page, size) {
+        this.props.dispatch(getEnrollmentsOfCampiagn(campaignId, page, size)).then(() => {
             //Pagination
-            let total = this.props.campaigns.count;
+            let total = this.props.enrollments.count;
             if (total) {
                 let pageItems = this.getPaginationItems(total, page, size);
                 //Set states
                 this.setState({
-                    campaigns: this.props.campaigns.rows,
+                    enrollments: this.props.enrollments.rows,
                     count: total,
                     items: pageItems
                 });
@@ -63,12 +64,7 @@ class CampaignList extends React.Component {
     handlePaginationClick(event) {
         //Get donation list
         let page = parseInt((event.target && event.target.innerText) ? event.target.innerText : 0);
-        this.getCampaignList(page, this.state.size);
-    }
-
-    deleteCampaignById = (campaignId) => (event) => {
-        console.log(`Campaign Id ${campaignId}`);
-        // TODO Delete campaign action
+        this.getEnrollmentList(this.state.campaignId, page, this.state.size);
     }
 
     render() {
@@ -76,7 +72,7 @@ class CampaignList extends React.Component {
             <div>
                 <Header />
                 <div className="root">
-                    <h1 className="mb-lg">All Campaigns</h1>
+                    <h1 className="mb-lg">All Enrollments</h1>
                     <Row>
                         <Col sm={12}>
                             {/* <div>
@@ -88,10 +84,12 @@ class CampaignList extends React.Component {
                                 <thead>
                                     <tr>
                                         <th>Id</th>
-                                        <th>Heading</th>
-                                        <th>Price</th>
-                                        <th>Start</th>
-                                        <th>End</th>
+                                        <th>Name</th>
+                                        <th>Status</th>
+                                        <th>Amount</th>
+                                        <th>UserId</th>
+                                        <th>CampaignId</th>
+                                        <th>PaymentId</th>
                                         <th>Active</th>
                                         <th>Deleted</th>
                                         <th>Created</th>
@@ -101,44 +99,34 @@ class CampaignList extends React.Component {
 
                                 <tbody>
 
-                                    {this.state.campaigns && this.state.campaigns.map((cam, index) => (
-                                        <tr key={cam.id}>
-                                            <td>{cam.id}</td>
-                                            <td>{cam.heading}</td>
-                                            <td>{cam.price}</td>
-                                            <td>{moment(cam.startTime).format("DD/MM/YYYY hh:mm A")}</td>
-                                            <td>{moment(cam.endTime).format("DD/MM/YYYY hh:mm A")}</td>
-                                            <td>{cam.active ? "Yes" : "No"}</td>
-                                            <td>{cam.deleted ? "Yes" : "No"}</td>
-                                            <td>{moment(cam.createdAt).format("DD/MM/YYYY hh:mm A")}</td>
+                                    {this.state.enrollments && this.state.enrollments.map((enroll, index) => (
+                                        <tr key={enroll.id}>
+                                            <td>{enroll.id}</td>
+                                            <td>{enroll.campaignName}</td>
+                                            <td>{enroll.status}</td>
+                                            <td>{enroll.amount}</td>
+                                            <td>{enroll.userId ? enroll.userId : "Guest"}</td>
+                                            <td>{enroll.campaignId}</td>
+                                            <td>{enroll.paymentId}</td>
+                                            <td>{enroll.active ? "Yes" : "No"}</td>
+                                            <td>{enroll.deleted ? "Yes" : "No"}</td>
+                                            <td>{moment(enroll.createdAt).format("DD/MM/YYYY hh:mm A")}</td>
                                             <td>
                                                 <Link to={
                                                     {
                                                         pathname: "/campaign/details",
                                                         // hash: "#the-hash",
-                                                        state: { campaignId: cam.id }
+                                                        state: { campaignId: enroll.id }
                                                     }
                                                 }>
                                                     <Visibility />
                                                 </Link>
-                                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                                <Link to={
-                                                    {
-                                                        pathname: "/campaign/enrollments",
-                                                        state: { campaignId: cam.id }
-                                                    }
-                                                }>
-                                                    <EventAvailable />
-                                                </Link>
-                                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                                <DeleteForever color="primary" onClick={this.deleteCampaignById(cam.id).bind(this)}/>
-                                                
                                             </td>
                                         </tr>
                                     ))}
-                                    {this.state.campaigns && !this.state.campaigns.length &&
+                                    {this.state.enrollments && !this.state.enrollments.length &&
                                         <tr>
-                                            <td colSpan="100">No campaigns are found.</td>
+                                            <td colSpan="100">No enrollments are found.</td>
                                         </tr>
                                     }
                                     {this.props.isFetching &&
@@ -164,9 +152,9 @@ class CampaignList extends React.Component {
 function mapStateToProps(state) {
     // console.log("states : ", state);
     return {
-        campaigns: state.events.getAllCampaignsResponse,
+        enrollments: state.events.getEnrollmentsResponse,
         isFetching: state.events.isFetching
     };
 }
 
-export default connect(mapStateToProps)(CampaignList);
+export default connect(mapStateToProps)(EnrollmentList);

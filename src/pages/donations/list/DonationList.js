@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Row, Col, Table } from 'react-bootstrap';
+import { Row, Col, Table, Pagination } from 'react-bootstrap';
 import moment from 'moment';
 import { Delete, AddCircle, Visibility } from '@material-ui/icons';
 
@@ -10,26 +10,58 @@ import Header from "../../../components/header/Header";
 import { getAllDonations } from "../../../actions/donations";
 // import s from './Dashboard.scss';
 import './DonationList.scss';
+import { PAGINATION_SIZE } from "../../../constants/application";
 
 class DonationList extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       donations: [],
       page: 0,
-      size: 10
+      size: PAGINATION_SIZE,
+      items: []
     };
   }
 
   componentWillMount() {
-    this.props.dispatch(getAllDonations(this.state.page, this.state.size)).then(() => {
-      this.setState({
-        donations: this.props.donations.rows,
-        count: this.props.donations.count
-      });
+    this.getDonationList(this.state.page, this.state.size);
+  }
+
+  getDonationList(page, size) {
+    this.props.dispatch(getAllDonations(page, size)).then(() => {
+      //Pagination
+      let total = this.props.donations.count;
+      if (total) {
+        let pageItems = this.getPaginationItems(total, page, size);
+        //Set states
+        this.setState({
+          donations: this.props.donations.rows,
+          count: this.props.donations.count,
+          items: pageItems
+        });
+      }
     });
+  }
+
+  getPaginationItems(total, page, size) {
+    let pageItems = [];
+    // let size = this.state.size;
+    let totalPages = parseInt(total / size);
+    for (let i = 0; i <= totalPages; i++) {
+      pageItems.push(
+        <Pagination.Item key={i} active={i === page}>
+          {i}
+        </Pagination.Item>
+      );
+    }
+    return pageItems;
+  }
+
+  handlePaginationClick(event) {
+    //Get donation list
+    let page = parseInt((event.target && event.target.innerText) ? event.target.innerText : 0);
+    this.getDonationList(page, this.state.size);
   }
 
   render() {
@@ -40,11 +72,11 @@ class DonationList extends React.Component {
           <h1 className="mb-lg">All Donations</h1>
           <Row>
             <Col sm={12}>
-              <div>
+              {/* <div>
                 <div className="pull-right">
                   <input type="search" placeholder="Search..." className="form-control input-sm" />
                 </div>
-              </div>
+              </div> */}
               <Table striped bordered hover>
                 <thead>
                   <tr>
@@ -99,6 +131,11 @@ class DonationList extends React.Component {
                   }
                 </tbody>
               </Table>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm={{ span: 6, offset: 5 }}>
+              <Pagination onClick={this.handlePaginationClick.bind(this)}>{this.state.items}</Pagination>
             </Col>
           </Row>
         </div>
