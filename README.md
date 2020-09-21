@@ -7,7 +7,10 @@ A simple react-redux starter template to start for beginners.
 2. Run **npm install** <br>
 This will install both run-time project dependencies and developer tools listed in package.json file. <br>
 
-3. If you running this on Windows run **npm install --global --production windows-build-tools**.
+3. If you running this on Windows run 
+```
+npm install --global --production windows-build-tools
+```
 
 4. Run **npm run start** <br>
 This command will build the app from the source files (/src). As soon as the initial build completes, it will start the Node.js server on top of it.
