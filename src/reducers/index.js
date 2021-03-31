@@ -1,15 +1,11 @@
 import { combineReducers } from 'redux';
 
-import events from './events';
-import donations from './donations';
-import auth from './auth';
+import alerts from './alerts';
 
 const rootReducers = combineReducers({
     // add reducer files references here
     // default: defaultReducer
-    events,
-    donations,
-    auth
+    alerts,
 });
 
 export default rootReducers;
